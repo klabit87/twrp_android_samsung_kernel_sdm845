@@ -141,6 +141,14 @@ void wil_memcpy_fromio_32(void *dst, const volatile void __iomem *src,
 	}
 }
 
+	if (unlikely(count)) {
+		/* count can be 1..3 */
+		u32 tmp = __raw_readl(s);
+
+		memcpy(d, &tmp, count);
+	}
+}
+
 void wil_memcpy_toio_32(volatile void __iomem *dst, const void *src,
 			size_t count)
 {
@@ -149,6 +157,15 @@ void wil_memcpy_toio_32(volatile void __iomem *dst, const void *src,
 
 	for (; count >= 4; count -= 4)
 		__raw_writel(*s++, d++);
+
+	if (unlikely(count)) {
+		/* count can be 1..3 */
+		u32 tmp = 0;
+
+		memcpy(&tmp, s, count);
+		__raw_writel(tmp, d);
+	}
+}
 
 	if (unlikely(count)) {
 		/* count can be 1..3 */
