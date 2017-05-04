@@ -86,6 +86,9 @@
 #include <asm/setup.h>
 #include <asm/sections.h>
 #include <asm/cacheflush.h>
+#ifdef CONFIG_KAISER
+#include <asm/kaiser.h>
+#endif
 
 #ifdef CONFIG_SEC_GPIO_DVS
 #include <linux/secgpio_dvs.h>
@@ -560,6 +563,9 @@ static void __init mm_init(void)
 	pgtable_init();
 	vmalloc_init();
 	ioremap_huge_init();
+#ifdef CONFIG_KAISER
+	kaiser_init();
+#endif
 }
 
 #ifdef CONFIG_RKP_CFP_ROPP
