@@ -249,7 +249,7 @@ static int __get_v4l2_format32(struct v4l2_format __user *kp,
 		return get_v4l2_sdr_format(&kp->fmt.sdr, &up->fmt.sdr);
 	default:
 		pr_info("compat_ioctl32: unexpected VIDIOC_FMT type %d\n",
-								kp->type);
+			kp->type);
 		return -EINVAL;
 	}
 }
@@ -308,7 +308,7 @@ static int __put_v4l2_format32(struct v4l2_format __user *kp,
 		return put_v4l2_sdr_format(&kp->fmt.sdr, &up->fmt.sdr);
 	default:
 		pr_info("compat_ioctl32: unexpected VIDIOC_FMT type %d\n",
-								kp->type);
+			kp->type);
 		return -EINVAL;
 	}
 }
@@ -408,7 +408,7 @@ struct v4l2_buffer32 {
 };
 
 static int get_v4l2_plane32(struct v4l2_plane __user *up, struct v4l2_plane32 __user *up32,
-				enum v4l2_memory memory)
+			    enum v4l2_memory memory)
 {
 	void __user *up_pln;
 	compat_long_t p;
@@ -433,7 +433,7 @@ static int get_v4l2_plane32(struct v4l2_plane __user *up, struct v4l2_plane32 __
 			return -EFAULT;
 	} else {
 		if (copy_in_user(&up->m.mem_offset, &up32->m.mem_offset,
-					sizeof(__u32)))
+				 sizeof(__u32)))
 			return -EFAULT;
 	}
 
@@ -441,7 +441,7 @@ static int get_v4l2_plane32(struct v4l2_plane __user *up, struct v4l2_plane32 __
 }
 
 static int put_v4l2_plane32(struct v4l2_plane __user *up, struct v4l2_plane32 __user *up32,
-				enum v4l2_memory memory)
+			    enum v4l2_memory memory)
 {
 	if (copy_in_user(up32, up, 2 * sizeof(__u32)) ||
 		copy_in_user(&up32->data_offset, &up->data_offset,
@@ -454,12 +454,12 @@ static int put_v4l2_plane32(struct v4l2_plane __user *up, struct v4l2_plane32 __
 	 * USERPTR stays the same (was userspace-provided), so no copying. */
 	if (memory == V4L2_MEMORY_MMAP)
 		if (copy_in_user(&up32->m.mem_offset, &up->m.mem_offset,
-					sizeof(__u32)))
+				 sizeof(__u32)))
 			return -EFAULT;
 	/* For DMABUF, driver might've set up the fd, so copy it back. */
 	if (memory == V4L2_MEMORY_DMABUF)
 		if (copy_in_user(&up32->m.fd, &up->m.fd,
-					sizeof(int)))
+				 sizeof(int)))
 			return -EFAULT;
 
 	return 0;
@@ -517,7 +517,7 @@ static int get_v4l2_buffer32(struct v4l2_buffer __user *kp,
 
 		uplane32 = compat_ptr(p);
 		if (!access_ok(VERIFY_READ, uplane32,
-				num_planes * sizeof(struct v4l2_plane32)))
+			       num_planes * sizeof(struct v4l2_plane32)))
 			return -EFAULT;
 
 		/* We don't really care if userspace decides to kill itself
@@ -546,8 +546,8 @@ static int get_v4l2_buffer32(struct v4l2_buffer __user *kp,
 			compat_long_t tmp;
 			unsigned long userptr;
 
-			if (get_user(tmp, &up->m.userptr))
-				return -EFAULT;
+				if (get_user(tmp, &up->m.userptr))
+					return -EFAULT;
 
 			userptr = (unsigned long)compat_ptr(tmp);
 			put_user(userptr, &kp->m.userptr);
@@ -808,7 +808,7 @@ static int get_v4l2_ext_controls32(struct v4l2_ext_controls __user *kp,
 		return -EFAULT;
 	ucontrols = compat_ptr(p);
 	if (!access_ok(VERIFY_READ, ucontrols,
-			n * sizeof(struct v4l2_ext_control32)))
+		       n * sizeof(struct v4l2_ext_control32)))
 		return -EFAULT;
 	kcontrols = compat_alloc_user_space(n * sizeof(struct v4l2_ext_control));
 	if (put_user(kcontrols, &kp->controls))
@@ -867,7 +867,7 @@ static int put_v4l2_ext_controls32(struct v4l2_ext_controls __user *kp,
 		return -EFAULT;
 	ucontrols = compat_ptr(p);
 	if (!access_ok(VERIFY_WRITE, ucontrols,
-			n * sizeof(struct v4l2_ext_control32)))
+		       n * sizeof(struct v4l2_ext_control32)))
 		return -EFAULT;
 
 	while (--n >= 0) {
